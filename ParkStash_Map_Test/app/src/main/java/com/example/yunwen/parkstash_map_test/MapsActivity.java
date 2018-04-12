@@ -107,9 +107,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      * Set Starting Locations
      */
     public void setLocations(){
-        addToDb("parking 1",37.338, - 121.884);
-        addToDb("parking 2",37.336, - 121.885);
-        addToDb("parking 3",37.338, - 121.889);
+        addToDb("parking 1","37.338", "-121.884");
+        addToDb("parking 2","37.336", "-121.885");
+        addToDb("parking 3","37.338", "-121.889");
     }
 
     /**
@@ -118,7 +118,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      * @param lat: latitude of place
      * @param lgt: longitude of place
      */
-    private void addToDb(String data, double lat, double lgt) {
+    private void addToDb(String data, String lat, String lgt) {
         MarkerDbRepo repo = new MarkerDbRepo(this);
         MarkerDb markerDb = repo.getColumnByTopic(data);
         try {
@@ -140,27 +140,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     /**
-     * List all data from database
-     */
-    public void listAll(){
-        int _algorithm_id = 0;
-        MarkerDbRepo repo = new MarkerDbRepo(this);
-        MarkerDb markerDb = new MarkerDb();
-        markerDb = repo.getColumnById(_algorithm_id);
-        ArrayList<HashMap<String, String>> mapArrayList =  repo.getMapArrayList();
-        if(mapArrayList.size()!=0) {
-            //Show Db list
-            for(int i = 0; i < mapArrayList.size();i++){
-                Log.d(TAG,"topic is: " + mapArrayList.get(i).get("topic"));
-                Log.d(TAG,"Latitude is: " + mapArrayList.get(i).get("latitude"));
-            }
-
-        }else{
-            Toast.makeText(this, "No content", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
      * This is where we can add markers or lines, add listeners or move the camera. In this case,
@@ -173,12 +152,28 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         setLocations();
-        //List All the Markers
-        // Add a marker in Sydney and move the camera
         LatLng lastPlace = new LatLng(37.341, -121.879);
         mMap.addMarker(new MarkerOptions().position(lastPlace).title("Parkstash"));
-        listAll();
-        //Latitude, Longitude, title
+        int _algorithm_id = 0;
+        MarkerDbRepo repo = new MarkerDbRepo(this);
+        MarkerDb markerDb = new MarkerDb();
+        markerDb = repo.getColumnById(_algorithm_id);
+        ArrayList<HashMap<String, String>> mapArrayList =  repo.getMapArrayList();
+        if(mapArrayList.size()!=0) {
+            //Show Db list
+            for(int i = 0; i < mapArrayList.size();i++){
+                Log.d(TAG,"topic is: " + mapArrayList.get(i).get("topic"));
+                Log.d(TAG,"Latitude is: " + mapArrayList.get(i).get("latitude"));
+                Double lat = Double.valueOf( mapArrayList.get(i).get("latitude"));
+                Double lng = Double.valueOf( mapArrayList.get(i).get("longitude"));
+                lastPlace = new LatLng(lat,lng);
+                mMap.addMarker(new MarkerOptions().position(lastPlace).title(mapArrayList.get(i).get("topic")));
+            }
+
+        }else{
+            Toast.makeText(this, "No content", Toast.LENGTH_SHORT).show();
+        }
+        //Move opening camera to Latitude, Longitude, title
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastPlace,15));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(14), 2000, null);
     }

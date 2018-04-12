@@ -101,8 +101,8 @@ public class MarkerDbRepo {
                 markerDb.content =cursor.getString(cursor.getColumnIndex(MarkerDb.KEY_content));
                 markerDb.topic  =cursor.getString(cursor.getColumnIndex(MarkerDb.KEY_topic));
                 markerDb.time =cursor.getInt(cursor.getColumnIndex(MarkerDb.KEY_time));
-                markerDb.latitude =cursor.getInt(cursor.getColumnIndex(MarkerDb.KEY_latitude));
-                markerDb.longitude =cursor.getInt(cursor.getColumnIndex(MarkerDb.KEY_longitude));
+                markerDb.latitude =cursor.getString(cursor.getColumnIndex(MarkerDb.KEY_latitude));
+                markerDb.longitude =cursor.getString(cursor.getColumnIndex(MarkerDb.KEY_longitude));
             }while(cursor.moveToNext());
         }
         cursor.close();
@@ -133,8 +133,8 @@ public class MarkerDbRepo {
                 markerDb.content =cursor.getString(cursor.getColumnIndex(MarkerDb.KEY_content));
                 markerDb.topic  =cursor.getString(cursor.getColumnIndex(MarkerDb.KEY_topic));
                 markerDb.time =cursor.getInt(cursor.getColumnIndex(MarkerDb.KEY_time));
-                markerDb.latitude =cursor.getInt(cursor.getColumnIndex(MarkerDb.KEY_latitude));
-                markerDb.longitude =cursor.getInt(cursor.getColumnIndex(MarkerDb.KEY_longitude));
+                markerDb.latitude =cursor.getString(cursor.getColumnIndex(MarkerDb.KEY_latitude));
+                markerDb.longitude =cursor.getString(cursor.getColumnIndex(MarkerDb.KEY_longitude));
                 Log.d("MainActivity", "The " + " Topic is: " + cursor.getString(cursor.getColumnIndex(markerDb.topic)));
                 Log.d("MainActivity", "The content is: " + cursor.getString(cursor.getColumnIndex(markerDb.content)));
             }while(cursor.moveToNext());
@@ -165,8 +165,8 @@ public class MarkerDbRepo {
                 markerDb.content =cursor.getString(cursor.getColumnIndex(MarkerDb.KEY_content));
                 markerDb.topic  =cursor.getString(cursor.getColumnIndex(MarkerDb.KEY_topic));
                 markerDb.time =cursor.getInt(cursor.getColumnIndex(MarkerDb.KEY_time));
-                markerDb.latitude =cursor.getInt(cursor.getColumnIndex(MarkerDb.KEY_latitude));
-                markerDb.longitude =cursor.getInt(cursor.getColumnIndex(MarkerDb.KEY_longitude));
+                markerDb.latitude =cursor.getString(cursor.getColumnIndex(MarkerDb.KEY_latitude));
+                markerDb.longitude =cursor.getString(cursor.getColumnIndex(MarkerDb.KEY_longitude));
             }while(cursor.moveToNext());
         }
         cursor.close();
