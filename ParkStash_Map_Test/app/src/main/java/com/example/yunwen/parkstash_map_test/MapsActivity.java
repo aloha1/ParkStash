@@ -26,6 +26,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,NavigationView.OnNavigationItemSelectedListener {
 
     private GoogleMap mMap;
@@ -36,15 +39,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private static final String LAST_APP_VERSION = "last_app_version";
 
+    private static final String TAG = "MapsActivity";
+
     private int _algorithm_id = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initDrawerLayout();
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-
-
     }
 
     /**
@@ -64,7 +66,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         setFragment();
+
         setDataBase();
     }
 
@@ -103,10 +107,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      * Set Starting Locations
      */
     public void setLocations(){
-        //addToDb();
+        addToDb("parking 1",37.338, - 121.884);
+        addToDb("parking 2",37.336, - 121.885);
+        addToDb("parking 3",37.338, - 121.889);
     }
 
-    private void addToDb(String data) {
+    /**
+     * Add a place to database
+     * @param data: name of place
+     * @param lat: latitude of place
+     * @param lgt: longitude of place
+     */
+    private void addToDb(String data, double lat, double lgt) {
         MarkerDbRepo repo = new MarkerDbRepo(this);
         MarkerDb markerDb = repo.getColumnByTopic(data);
         try {
@@ -116,12 +128,35 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         } catch (Exception e) {
             markerDb.time = 25;
-            markerDb.content = "";//should be definition
+            markerDb.content = "";
             markerDb.topic = data;
+            markerDb.latitude = lat;
+            markerDb.longitude = lgt;
             markerDb.algorithm_ID = _algorithm_id;
             _algorithm_id = repo.insert(markerDb);
             Toast.makeText(this, "Update", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * List all data from database
+     */
+    public void listAll(){
+        int _algorithm_id = 0;
+        MarkerDbRepo repo = new MarkerDbRepo(this);
+        MarkerDb markerDb = new MarkerDb();
+        markerDb = repo.getColumnById(_algorithm_id);
+        ArrayList<HashMap<String, String>> mapArrayList =  repo.getMapArrayList();
+        if(mapArrayList.size()!=0) {
+            //Show Db list
+            for(int i = 0; i < mapArrayList.size();i++){
+                Log.d(TAG,"topic is: " + mapArrayList.get(i).get("topic"));
+                Log.d(TAG,"Latitude is: " + mapArrayList.get(i).get("latitude"));
+            }
+
+        }else{
+            Toast.makeText(this, "No content", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -137,11 +172,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
+        setLocations();
         //List All the Markers
         // Add a marker in Sydney and move the camera
         LatLng lastPlace = new LatLng(37.341, -121.879);
         mMap.addMarker(new MarkerOptions().position(lastPlace).title("Parkstash"));
+        listAll();
         //Latitude, Longitude, title
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastPlace,15));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(14), 2000, null);

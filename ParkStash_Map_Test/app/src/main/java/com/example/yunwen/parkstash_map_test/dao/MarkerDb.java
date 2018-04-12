@@ -22,6 +22,6 @@ public class MarkerDb {
     public String topic;
     public String content;
     public int time;
-    public int latitude;
-    public int longitude;
+    public double latitude;
+    public double longitude;
 }

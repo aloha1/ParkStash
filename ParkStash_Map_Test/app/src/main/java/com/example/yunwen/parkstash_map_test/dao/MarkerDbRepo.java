@@ -52,7 +52,7 @@ public class MarkerDbRepo {
         db.close();
     }
 
-    public ArrayList<HashMap<String, String>> getAlgorithmList(){
+    public ArrayList<HashMap<String, String>> getMapArrayList(){
         SQLiteDatabase db= markerDbHelper.getReadableDatabase();
         String selectQuery="SELECT "+
                 MarkerDb.KEY_ID+","+
