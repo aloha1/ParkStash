@@ -8,69 +8,55 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/nav_book"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
+            android:icon="@drawable/book_128"
+            android:title="@string/nav_book" />
         <item
             android:id="@+id/nav_list"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
+            android:icon="@drawable/house"
+            android:title="@string/nav_list" />
         <item
             android:id="@+id/nav_past"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-
+            android:icon="@drawable/pastbooking_128"
+            android:title="@string/nav_past" />
     </group>
 
     <group android:id="@+id/menu_mid"
         android:checkableBehavior="none">
         <item
             android:id="@+id/nav_payments"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
+            android:icon="@drawable/payment_128"
+            android:title="@string/nav_payments" />
         <item
             android:id="@+id/nav_promos"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
+            android:icon="@drawable/promo_128"
+            android:title="@string/nav_promos" />
         <item
             android:id="@+id/nav_wallet"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
+            android:icon="@drawable/wallet_128"
+            android:title="@string/nav_wallet" />
         <item
             android:id="@+id/nav_my_profile"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:icon="@drawable/profile_128"
+            android:title="@string/nav_my_profile" />
         <item
             android:id="@+id/nav_ratings"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:icon="@drawable/rating_128"
+            android:title="@string/nav_rating" />
     </group>
     <group android:id="@+id/menu_bottom"
         android:checkableBehavior="none">
         <item
             android:id="@+id/nav_help"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Import" />
+            android:icon="@drawable/help_128"
+            android:title="@string/nav_help" />
         <item
             android:id="@+id/nav_legal"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
+            android:icon="@drawable/legal_128"
+            android:title="@string/nav_legal" />
         <item
             android:id="@+id/nav_logout"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-
+            android:icon="@drawable/logout_128"
+            android:title="@string/nav_logout" />
     </group>
-    <!--<item android:title="Communicate">-->
-        <!--<menu>-->
-            <!--<item-->
-                <!--android:id="@+id/nav_share"-->
-                <!--android:icon="@drawable/ic_menu_share"-->
-                <!--android:title="Share" />-->
-            <!--<item-->
-                <!--android:id="@+id/nav_send"-->
-                <!--android:icon="@drawable/ic_menu_send"-->
-                <!--android:title="Send" />-->
-        <!--</menu>-->
-    <!--</item>-->
 
 </menu>

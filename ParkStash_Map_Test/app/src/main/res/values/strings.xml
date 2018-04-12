@@ -5,4 +5,18 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
+    <!--navigation-->
+    <string name="nav_book">Book a Spot</string>
+    <string name="nav_list">List a Spot</string>
+    <string name="nav_past">Past Bookings</string>
+    <string name="nav_payments">Payments</string>
+    <string name="nav_promos">Promos</string>
+    <string name="nav_wallet">Wallet</string>
+    <string name="nav_my_profile">My Profile</string>
+    <string name="nav_rating">Ratings</string>
+    <string name="nav_help">Help</string>
+    <string name="nav_legal">Legal</string>
+    <string name="nav_logout">Logout</string>
+
 </resources>
