@@ -15,6 +15,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.example.yunwen.parkstash_map_test.dao.MarkerDb;
@@ -48,7 +50,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private static final String TAG = "MapsActivity";
 
-    private int _algorithm_id = 0;
+    private int MAP_LOCATION_ID = 0;
+
+    private Button buttonAdd;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +80,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         setFragment();
-
         setDataBase();
     }
 
@@ -85,6 +89,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      */
     public void setFragment() {
         placeAutoComplete = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.place_autocomplete);
+        buttonAdd = (Button) findViewById(R.id.buttonMap);
         /*
         * The following code example shows setting an AutocompleteFilter on a PlaceAutocompleteFragment to
         * set a filter returning only results with a precise address.
@@ -97,9 +102,21 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onPlaceSelected(Place place) {
                 LatLng autoCompleteLatLng=place.getLatLng();
-                mMap.addMarker(new MarkerOptions().position(autoCompleteLatLng).title("Searched Place"));
-                mMap.moveCamera(CameraUpdateFactory.newLatLng(autoCompleteLatLng));
-                addToDb("new place",autoCompleteLatLng.latitude+"",autoCompleteLatLng.longitude+"");
+                final String title = place.getName().toString();
+                final String latTmp = autoCompleteLatLng.latitude+"";
+                final String lngTmp = autoCompleteLatLng.longitude+"";
+                mMap.addMarker(new MarkerOptions().position(autoCompleteLatLng).title(title));
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(autoCompleteLatLng,15));
+                mMap.animateCamera(CameraUpdateFactory.zoomTo(14), 2000, null);
+                buttonAdd.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        addToDb(title,latTmp,lngTmp);
+                        Toast.makeText(getApplicationContext(),"Saved",Toast.LENGTH_SHORT).show();
+                    }
+                });
                 Log.d("Maps", "Place selected: " + place.getName());
             }
 
@@ -164,8 +181,8 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             markerDb.topic = data;
             markerDb.latitude = lat;
             markerDb.longitude = lgt;
-            markerDb.algorithm_ID = _algorithm_id;
-            _algorithm_id = repo.insert(markerDb);
+            markerDb.algorithm_ID = MAP_LOCATION_ID;
+            MAP_LOCATION_ID = repo.insert(markerDb);
             e.printStackTrace();
         }
     }
@@ -173,21 +190,17 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         setLocations();
-        int _algorithm_id = 0;
+        int databaseId = 0;
         MarkerDbRepo repo = new MarkerDbRepo(this);
         MarkerDb markerDb = new MarkerDb();
-        markerDb = repo.getColumnById(_algorithm_id);
-        ArrayList<HashMap<String, String>> mapArrayList =  repo.getMapArrayList();
+        markerDb = repo.getColumnById(databaseId);
+        ArrayList<HashMap<String, String>> mapArrayList = new  ArrayList<HashMap<String, String>>();
+        mapArrayList =  repo.getMapArrayList();
         if(mapArrayList.size()!=0) {
             //Show Db list
             for(int i = 0; i < mapArrayList.size();i++){

@@ -6,6 +6,8 @@
 
     <string name="action_settings">Settings</string>
 
+    <string name="button_add">Add</string>
+
     <!--navigation-->
     <string name="nav_book">Book a Spot</string>
     <string name="nav_list">List a Spot</string>
