@@ -19,6 +19,11 @@ import android.widget.Toast;
 
 import com.example.yunwen.parkstash_map_test.dao.MarkerDb;
 import com.example.yunwen.parkstash_map_test.dao.MarkerDbRepo;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.places.AutocompleteFilter;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -32,6 +37,8 @@ import java.util.HashMap;
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback,NavigationView.OnNavigationItemSelectedListener {
 
     private GoogleMap mMap;
+
+    PlaceAutocompleteFragment placeAutoComplete;
 
     public enum AppStart {
         FIRST_TIME, FIRST_TIME_VERSION, NORMAL;
@@ -77,6 +84,31 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
      * Initialization of MapFragment
      */
     public void setFragment() {
+        placeAutoComplete = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.place_autocomplete);
+        /*
+        * The following code example shows setting an AutocompleteFilter on a PlaceAutocompleteFragment to
+        * set a filter returning only results with a precise address.
+        */
+        AutocompleteFilter typeFilter = new AutocompleteFilter.Builder()
+                .setTypeFilter(AutocompleteFilter.TYPE_FILTER_ADDRESS)
+                .build();
+        placeAutoComplete.setFilter(typeFilter);
+        placeAutoComplete.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(Place place) {
+                LatLng autoCompleteLatLng=place.getLatLng();
+                mMap.addMarker(new MarkerOptions().position(autoCompleteLatLng).title("Searched Place"));
+                mMap.moveCamera(CameraUpdateFactory.newLatLng(autoCompleteLatLng));
+                addToDb("new place",autoCompleteLatLng.latitude+"",autoCompleteLatLng.longitude+"");
+                Log.d("Maps", "Place selected: " + place.getName());
+            }
+
+            @Override
+            public void onError(Status status) {
+                Log.d("Maps", "An error occurred: " + status);
+            }
+        });
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -110,6 +142,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         addToDb("parking 1","37.338", "-121.884");
         addToDb("parking 2","37.336", "-121.885");
         addToDb("parking 3","37.338", "-121.889");
+        addToDb("Parkstash", "37.341","-121.879");
     }
 
     /**
@@ -124,7 +157,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         try {
             if (markerDb.topic.equals(data)) {
                 repo.update(markerDb);
-                Toast.makeText(this, "No content", Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
             markerDb.time = 25;
@@ -134,7 +166,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             markerDb.longitude = lgt;
             markerDb.algorithm_ID = _algorithm_id;
             _algorithm_id = repo.insert(markerDb);
-            Toast.makeText(this, "Update", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
     }
@@ -152,8 +183,6 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         setLocations();
-        LatLng lastPlace = new LatLng(37.341, -121.879);
-        mMap.addMarker(new MarkerOptions().position(lastPlace).title("Parkstash"));
         int _algorithm_id = 0;
         MarkerDbRepo repo = new MarkerDbRepo(this);
         MarkerDb markerDb = new MarkerDb();
@@ -166,16 +195,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Log.d(TAG,"Latitude is: " + mapArrayList.get(i).get("latitude"));
                 Double lat = Double.valueOf( mapArrayList.get(i).get("latitude"));
                 Double lng = Double.valueOf( mapArrayList.get(i).get("longitude"));
-                lastPlace = new LatLng(lat,lng);
+                LatLng lastPlace = new LatLng(lat,lng);
                 mMap.addMarker(new MarkerOptions().position(lastPlace).title(mapArrayList.get(i).get("topic")));
+                if(i == mapArrayList.size()-1){
+                    //Move opening camera to Latitude, Longitude, title
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastPlace,15));
+                    mMap.animateCamera(CameraUpdateFactory.zoomTo(14), 2000, null);
+                }
             }
 
         }else{
-            Toast.makeText(this, "No content", Toast.LENGTH_SHORT).show();
+         Log.d(TAG,"No content");
         }
-        //Move opening camera to Latitude, Longitude, title
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(lastPlace,15));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(14), 2000, null);
+
     }
 
     @Override
